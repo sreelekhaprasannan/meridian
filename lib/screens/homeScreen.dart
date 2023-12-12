@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meridian/screens/detailsScreen.dart';
 import 'package:meridian/utilities/homeProvider.dart';
@@ -15,7 +16,7 @@ class ScreenHome extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+          padding:const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
           child: ListView(
             children: [
               const Row(
@@ -73,65 +74,75 @@ class ScreenHome extends StatelessWidget {
                 child:
                     Consumer<ProviderHomePage>(builder: (context, home, child) {
                   return home.homeTiledata.length > 0
-                      ? ListView.separated(
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: const CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
-                              ),
-                              title: Container(
-                                height: screenHeight * .2,
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                        child: Container(
-                                      child: Text(
-                                        home.homeTiledata[index].body,
-                                        maxLines: 5,
-                                      ),
-                                    )),
-                                    Expanded(
-                                        child: Row(
+                      ? RefreshIndicator(
+                          onRefresh: () async {
+                            await Provider.of<ProviderHomePage>(context,
+                                    listen: false)
+                                .getData(context: context);
+                          },
+                          child: ListView.separated(
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  leading: const CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                        'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+                                  ),
+                                  title: Container(
+                                    height: screenHeight * .18,
+                                    child: Column(
                                       children: [
                                         Expanded(
-                                          flex: 3,
-                                          child: Wrap(
-                                            children: [
-                                              TextButton.icon(
-                                                  onPressed: () {},
-                                                  icon: Icon(
-                                                      Icons.thumb_up_outlined),
-                                                  label: Text('2')),
-                                              TextButton.icon(
-                                                  onPressed: () {},
-                                                  icon: Icon(
-                                                      Icons.comment_outlined),
-                                                  label: Text(''))
-                                            ],
+                                            child: Container(
+                                          child: Text(
+                                            home.homeTiledata[index].title,
+                                            maxLines: 5,
                                           ),
-                                        ),
+                                        )),
                                         Expanded(
-                                          child: TextButton.icon(
-                                              onPressed: () {},
-                                              icon: Icon(Icons.reply_sharp),
-                                              label: Text('')),
-                                        )
+                                            child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 3,
+                                              child: Wrap(
+                                                children: [
+                                                  TextButton.icon(
+                                                      onPressed: () {},
+                                                      icon: Icon(Icons
+                                                          .thumb_up_outlined),
+                                                      label: Text('2')),
+                                                  TextButton.icon(
+                                                      onPressed: () {},
+                                                      icon: Icon(Icons
+                                                          .comment_outlined),
+                                                      label: Text(''))
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: TextButton.icon(
+                                                  onPressed: () {},
+                                                  icon: Icon(
+                                                      CupertinoIcons.reply),
+                                                  label: Text('')),
+                                            )
+                                          ],
+                                        ))
                                       ],
-                                    ))
-                                  ],
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => ScreenDetailsPage()));
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ScreenDetailsPage()));
+                                  },
+                                );
                               },
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return Divider();
-                          },
-                          itemCount: home.homeTiledata.length)
+                              separatorBuilder: (context, index) {
+                                return Divider();
+                              },
+                              itemCount: home.homeTiledata.length),
+                        )
                       : Container(
                           child: Center(child: Text('No Data found')),
                         );

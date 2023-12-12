@@ -17,7 +17,14 @@ class ScreenDetailsPage extends StatelessWidget {
           return data.detailsData.isNotEmpty
               ? ListView.builder(
                   itemBuilder: (context, index) {
-                    return Text(data.detailsData[index].body);
+                    return Column(
+                      children: [
+                        Text(data.detailsData[index].title),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * .01),
+                        Text(data.detailsData[index].body),
+                      ],
+                    );
                   },
                   itemCount: data.detailsData.length,
                 )
